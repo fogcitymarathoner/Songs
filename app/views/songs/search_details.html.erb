@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>song search details</title>
+	</head>
+	<body>
+<%
+require 'pp'
+require 'iconv'
+ %>
+<% form_for :songs, :url => { :action => "search_details" } do |f| %>
+  Artist <%= text_field_tag(:artist, value = @artist) %>
+  Album <%= text_field_tag(:album, value = @album) %>
+  Title <%= text_field_tag(:title, value = @title) %>
+  Location <%= text_field_tag(:location, value = @location) %>
+<br>
+    <input id="search_box_wdyn_submit" class="submit" type="submit" value="search it!"/>
+  <%= link_to 'Search All Fields', 'search' %>
+  <%= link_to 'Index', '/' %>
+    </div> 
+	<%if   !@songs.empty?	%>	
+<table>
+  <tr>
+    <th>Artist</th>
+    <th>Album</th>
+    <th>Genre</th>
+    <th>Title</th>
+    <th>Location</th>
+  </tr>
+  
+<% @songs.each do |song| %>
+  <tr>   
+	<% 
+	# deal with utf weirdness, might not be necessary because 'husker du' has been corrected in collection
+	ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+	artist = ic.iconv(song.artist)
+	pp song.id
+	pp song.artist
+	pp song.location
+	album = ic.iconv(song.album)
+	#genre = ic.iconv(song.genre)
+	title = ic.iconv(song.title)
+	location = ic.iconv(song.location)
+	%>
+    <td WIDTH=200 ><%=h artist %></td>
+    <td><%=h album %></td>
+    <td><%=h song.genre %></td>
+    <td><%=h title %></td>
+    <td><%=h location %></td>
+  </tr>
+<% end %>
+</table>   
+<% end %>  
+<% end %> 	
+<%if   !@songs.empty?	%>	
+	<% @songs.each do |song| %>
+		<% 
+		ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+		location = ic.iconv(song.location)
+		%>		
+		copy "<%=h location %>" .<br>
+	<% end %>
+	<br>
+<% end %> 	
+	</body>
+</html>
